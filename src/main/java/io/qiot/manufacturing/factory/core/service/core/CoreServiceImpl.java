@@ -40,10 +40,10 @@ public class CoreServiceImpl implements CoreService {
 
     @ConfigProperty(name = "qiot.certstore.password")
     String ksPassword;
-    
+
     @Inject
     DataStoreService dataStoreService;
-    
+
     private FactoryDataDTO factoryData;
 
     void onStart(@Observes StartupEvent ev) throws Exception {
@@ -51,11 +51,9 @@ public class CoreServiceImpl implements CoreService {
         checkRegistration();
     }
 
-    private void checkRegistration()
-            throws DataValidationException, SubscriptionException {
-        factoryData=dataStoreService.loadFactoryData();
-        if (factoryData==null)
-         {
+    private void checkRegistration() throws Exception {
+        factoryData = dataStoreService.loadFactoryData();
+        if (factoryData == null) {
             LOGGER.debug("Factory is not registered. "
                     + "Stepping through the registration process...");
 
@@ -71,11 +69,11 @@ public class CoreServiceImpl implements CoreService {
 
             factoryId = registrationService.register(factoryData.serial,
                     factoryData.name, ksPassword);
-            
+
             LOGGER.debug("Received factory ID: {}", factoryId);
 
-            factoryData.id=factoryId;
-            
+            factoryData.id = factoryId;
+
             dataStoreService.saveFactortData(factoryData);
 
             LOGGER.debug("Data Created successfully: {}", factoryData);

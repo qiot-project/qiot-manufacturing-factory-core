@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public UUID register(String serial, String name, String ksPassword)
-            throws SubscriptionException {
+            throws Exception {
         SubscriptionResponse subscriptionResponse = null;
         FactorySubscriptionRequest registerRequest = new FactorySubscriptionRequest();
 
@@ -45,34 +46,43 @@ public class RegistrationServiceImpl implements RegistrationService {
                 "Attempting subscription process with the following data: {}",
                 registerRequest);
 
-//        while (subscriptionResponse == null) {
-            // TODO: put sleep time in application.properties
-            long sleepTime = 2000;
-            try {
+        // while (subscriptionResponse == null) {
+        // TODO: put sleep time in application.properties
+        long sleepTime = 2000;
+        try {
 
-                subscriptionResponse = plantManagerClient
-                        .subscribeFactory(registerRequest);
-            } catch (Exception e) {
-                LOGGER.info(
-                        "An error occurred registering the factory. "
-                                + "Retrying in {} millis.\n Error message: {}",
-                        sleepTime, e.getMessage());
-//                try {
-//                    Thread.sleep(sleepTime);
-//                } catch (InterruptedException ie) {
-//                    Thread.currentThread().interrupt();
-//                }
-//            }
+            subscriptionResponse = plantManagerClient
+                    .subscribeFactory(registerRequest);
+
+            LOGGER.info("Factory registered successfully: {}",
+                    subscriptionResponse);
+
+            // create factory issuer
+            CAIssuerRequest issuerRequest = new CAIssuerRequest();
+            issuerRequest.tlsCert = subscriptionResponse.tlsCert;
+            issuerRequest.tlsKey = subscriptionResponse.tlsKey;
+            LOGGER.info(
+                    "Attempting to create the local issuer with the following data: {}",
+                    issuerRequest);
+
+            Response provisionIssuerResponse = registrationServiceClient
+                    .provisionIssuer(issuerRequest);
+            LOGGER.info("Issuer Successfully created: {}",
+                    provisionIssuerResponse);
+
+            return subscriptionResponse.id;
+        } catch (Exception e) {
+            LOGGER.info(
+                    "An error occurred registering the factory. "
+                            + "Retrying in {} millis.\n Error message: {}",
+                    sleepTime, e.getMessage());
+            // try {
+            // Thread.sleep(sleepTime);
+            // } catch (InterruptedException ie) {
+            // Thread.currentThread().interrupt();
+            // }
+            // }
+            throw e;
         }
-
-        // create factory issuer
-        CAIssuerRequest issuerRequest = new CAIssuerRequest();
-        issuerRequest.tlsCert = subscriptionResponse.tlsCert;
-        issuerRequest.tlsKey = subscriptionResponse.tlsKey;
-        registrationServiceClient.provisionIssuer(issuerRequest);
-
-        LOGGER.debug("Registratior process results: {}", subscriptionResponse);
-
-        return subscriptionResponse.id;
     }
 }

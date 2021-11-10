@@ -20,7 +20,6 @@ import io.qiot.manufacturing.datacenter.commons.domain.subscription.MachinerySub
  */
 @Path("/v1")
 @RegisterRestClient(configKey = "plant-manager-api")
-@RegisterProvider(SubscriptionException.class)
 public interface PlantManagerClient {
 
     @PUT

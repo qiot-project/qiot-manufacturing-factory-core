@@ -45,7 +45,8 @@ public class KubernetesDataStoreService implements DataStoreService {
     @Override
     public void saveFactortData(FactoryDataDTO factoryData)
             throws DataValidationException {
-        LOGGER.debug("Secret Factory ID creation {} ", factoryData.id);
+        LOGGER.info("Trying to save Factoty data to Secret {}: \n{}",
+                SECRET_NAME, factoryData);
 
         Secret factoryDataSecret = new SecretBuilder().withNewMetadata()
                 .withName(SECRET_NAME).endMetadata()
@@ -64,15 +65,16 @@ public class KubernetesDataStoreService implements DataStoreService {
 
     @Override
     public FactoryDataDTO loadFactoryData() throws DataValidationException {
+        LOGGER.info("Trying to load Factoty data from Secret {}", SECRET_NAME);
         FactoryDataDTO factoryData = null;
         Resource<Secret> secretResource = secretOperation.operation()
                 .withName(SECRET_NAME);
-        if(!secretResource.isReady())
+        if (!secretResource.isReady())
             return null;
-        
+
         Secret factoryDataSecret = secretResource.get();
         Map<String, String> secretData = factoryDataSecret.getData();
-        
+
         factoryData = new FactoryDataDTO();
         factoryData.id = UUID.nameUUIDFromBytes(
                 Base64.getDecoder().decode(secretData.get(FACTORY_ID)));
