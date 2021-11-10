@@ -12,12 +12,10 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
-import io.qiot.manufacturing.all.commons.exception.DataValidationException;
-import io.qiot.manufacturing.all.commons.exception.SubscriptionException;
+import io.qiot.manufacturing.factory.core.domain.dto.CheckRegistrationEventDTO;
 import io.qiot.manufacturing.factory.core.domain.dto.FactoryDataDTO;
 import io.qiot.manufacturing.factory.core.service.datastore.DataStoreService;
 import io.qiot.manufacturing.factory.core.service.registration.RegistrationService;
-import io.quarkus.runtime.StartupEvent;
 
 /**
  * @author andreabattaglia
@@ -25,7 +23,7 @@ import io.quarkus.runtime.StartupEvent;
  */
 // @Startup(1)
 @ApplicationScoped
-public class CoreServiceImpl implements CoreService {
+public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Inject
     Logger LOGGER;
@@ -46,12 +44,8 @@ public class CoreServiceImpl implements CoreService {
 
     private FactoryDataDTO factoryData;
 
-    void onStart(@Observes StartupEvent ev) throws Exception {
-        LOGGER.debug("The application is starting...{}");
-        checkRegistration();
-    }
 
-    private void checkRegistration() throws Exception {
+    void checkRegistration(@Observes CheckRegistrationEventDTO ev) throws Exception {
         factoryData = dataStoreService.loadFactoryData();
         if (factoryData == null) {
             LOGGER.info("Factory is not registered. "
