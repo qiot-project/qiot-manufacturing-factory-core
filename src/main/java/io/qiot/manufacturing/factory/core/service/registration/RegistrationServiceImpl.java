@@ -41,7 +41,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         registerRequest.name = name;
         registerRequest.keyStorePassword = ksPassword;
 
-        LOGGER.debug(
+        LOGGER.info(
                 "Attempting subscription process with the following data: {}",
                 registerRequest);
 
