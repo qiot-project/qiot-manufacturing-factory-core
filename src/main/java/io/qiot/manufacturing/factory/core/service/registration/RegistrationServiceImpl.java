@@ -57,19 +57,19 @@ public class RegistrationServiceImpl implements RegistrationService {
                         "An error occurred registering the factory. "
                                 + "Retrying in {} millis.\n Error message: {}",
                         sleepTime, e.getMessage());
-                LOGGER.error("",e);                try {
-                    Thread.sleep(sleepTime);
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                }
+//                try {
+//                    Thread.sleep(sleepTime);
+//                } catch (InterruptedException ie) {
+//                    Thread.currentThread().interrupt();
+//                }
             }
         }
-        
+
         // create factory issuer
-        CAIssuerRequest issuerRequest=new CAIssuerRequest();
-        issuerRequest.tlsCert=subscriptionResponse.tlsCert;
-        issuerRequest.tlsKey=subscriptionResponse.tlsKey;
-        registrationServiceClient.provisionIssuer(issuerRequest);        
+        CAIssuerRequest issuerRequest = new CAIssuerRequest();
+        issuerRequest.tlsCert = subscriptionResponse.tlsCert;
+        issuerRequest.tlsKey = subscriptionResponse.tlsKey;
+        registrationServiceClient.provisionIssuer(issuerRequest);
 
         LOGGER.debug("Registratior process results: {}", subscriptionResponse);
 
