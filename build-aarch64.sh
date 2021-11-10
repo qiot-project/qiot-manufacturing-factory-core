@@ -4,5 +4,5 @@ PV=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=
 docker login quay.io -u ${QUAY_MANUFACTURING_USERNAME} -p ${QUAY_MANUFACTURING_PASSWORD}
 docker run --rm --privileged multiarch/qemu-user-static:register --reset
 docker rmi quay.io/qiotmanufacturing/factory-production-validator:$PV --force
-docker build -t quay.io/qiotmanufacturing/factory-facility-manager:$PV -f src/main/docker/Dockerfile.native.multiarch .
-docker push quay.io/qiotmanufacturing/factory-facility-manager:$PV
+docker build -t quay.io/qiotmanufacturing/factory-core:$PV -f src/main/docker/Dockerfile.native.multiarch .
+docker push quay.io/qiotmanufacturing/factory-core:$PV

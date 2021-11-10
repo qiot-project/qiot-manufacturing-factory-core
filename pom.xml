@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.qiot.manufacturing.factory</groupId>
-    <artifactId>cire</artifactId>
+    <artifactId>core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <parent>
         <groupId>io.qiot.manufacturing</groupId>
@@ -13,9 +13,9 @@
         <version>1.0.0</version>
     </parent>
     <scm>
-        <connection>scm:git:https://github.com/qiot-project/qiot-manufacturing-datacenter-facility-manager.git</connection>
-        <developerConnection>scm:git:https://github.com/qiot-project/qiot-manufacturing-datacenter-facility-manager.git/</developerConnection>
-        <url>https://github.com/qiot-project/qiot-manufacturing-datacenter-facility-manager</url>
+        <connection>scm:git:https://github.com/qiot-project/qiot-manufacturing-factory-core.git</connection>
+        <developerConnection>scm:git:https://github.com/qiot-project/qiot-manufacturing-factory-core.git/</developerConnection>
+        <url>https://github.com/qiot-project/qiot-manufacturing-factory-core</url>
         <tag>HEAD</tag>
     </scm>
     <repositories>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>io.qiot.ubi.all</groupId>
             <artifactId>registration-commons</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </dependency>
         <dependency>
             <groupId>io.qiot.manufacturing.datacenter</groupId>
@@ -83,10 +83,6 @@
         <!-- REST -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-rest-client-jackson</artifactId>
         </dependency>
         <!-- UTILS -->
@@ -94,11 +90,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
-<!--         <dependency> -->
-<!--             <groupId>io.fabric8</groupId> -->
-<!--             <artifactId>certmanager-client</artifactId> -->
-<!--             <version>5.8.0</version> -->
-<!--         </dependency> -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-kubernetes-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -148,7 +143,7 @@
             <properties>
                 <jkube.environment>prod</jkube.environment>
                 <jkube.build.strategy>jib</jkube.build.strategy>
-                <jkube.generator.name>quay.io/qiotmanufacturing/factory-facility-manager:${project.version}</jkube.generator.name>
+                <jkube.generator.name>quay.io/qiotmanufacturing/factory-core:${project.version}</jkube.generator.name>
             </properties>
         </profile>
         <profile>
