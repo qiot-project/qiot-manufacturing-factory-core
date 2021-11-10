@@ -45,7 +45,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 "Attempting subscription process with the following data: {}",
                 registerRequest);
 
-        while (subscriptionResponse == null) {
+//        while (subscriptionResponse == null) {
             // TODO: put sleep time in application.properties
             long sleepTime = 2000;
             try {
@@ -62,7 +62,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 //                } catch (InterruptedException ie) {
 //                    Thread.currentThread().interrupt();
 //                }
-            }
+//            }
         }
 
         // create factory issuer
