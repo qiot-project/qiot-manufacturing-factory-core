@@ -54,7 +54,7 @@ public class CoreServiceImpl implements CoreService {
     private void checkRegistration() throws Exception {
         factoryData = dataStoreService.loadFactoryData();
         if (factoryData == null) {
-            LOGGER.debug("Factory is not registered. "
+            LOGGER.info("Factory is not registered. "
                     + "Stepping through the registration process...");
 
             factoryData = new FactoryDataDTO();
@@ -67,16 +67,21 @@ public class CoreServiceImpl implements CoreService {
             // }
             // else
 
-            factoryId = registrationService.register(factoryData.serial,
-                    factoryData.name, ksPassword);
+            try {
+                factoryId = registrationService.register(factoryData.serial,
+                        factoryData.name, ksPassword);
 
-            LOGGER.debug("Received factory ID: {}", factoryId);
+                LOGGER.debug("Received factory ID: {}", factoryId);
 
-            factoryData.id = factoryId;
+                factoryData.id = factoryId;
 
-            dataStoreService.saveFactortData(factoryData);
+                dataStoreService.saveFactortData(factoryData);
 
-            LOGGER.debug("Data Created successfully: {}", factoryData);
+                LOGGER.debug("Data Created successfully: {}", factoryData);
+            } catch (Exception e) {
+
+                LOGGER.info("SOMETHING WENT WRONG", e);
+            }
         }
 
     }
