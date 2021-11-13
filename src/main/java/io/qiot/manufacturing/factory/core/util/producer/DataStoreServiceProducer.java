@@ -43,7 +43,7 @@ public class DataStoreServiceProducer {
                 .equals(LaunchMode.NORMAL.getDefaultProfile())) {
             LOGGER.debug(
                     "Active profile is: {}. Running on a Kubernates environment");
-            return new KubernetesDataStoreService(LOGGER, secretOperation);
+            return new KubernetesDataStoreService(LOGGER, MAPPER, secretOperation);
         } else {
             LOGGER.debug(
                     "Active profile is: {}. Running on a local/container-engine environment");
