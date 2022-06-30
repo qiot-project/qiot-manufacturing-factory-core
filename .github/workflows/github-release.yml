@@ -1,13 +1,11 @@
-name: Nightly Build (from Develop branch)
+name: Github release (from main)
 
 on:
   workflow_dispatch:
-
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 2 * * *'
   
   push:
+    branches:
+      - main
     paths-ignore:
       - .github/workflows/**
       - .gitignore
@@ -19,22 +17,25 @@ on:
       - mvnw.cmd
       - README.md
       - release.sh
-    branches:
-      - develop
+      
+#  pull_request:
+#    branches:
+#      - main
+#    paths-ignore:
+#      - .github/workflows/**
 
 jobs:
-  call-nightly-build:
+  call-github-release:
 #    environment: development
-    uses: qiot-project/qiot-ubi-all-reusable-workflows/.github/workflows/app-snapshot.yml@main
+    uses: qiot-project/qiot-ubi-all-reusable-workflows/.github/workflows/app-github-release.yml@main
     # To pass named inputs to a called workflow, use the "with" keyword in a job.
-    # with:
-      # JVM: false # Optional - Default true - Enable this input variable if you need your Quarkus app to be compiled in JVM_MODE 
+    with:
+      ACTOR: ${GITHUB_ACTOR}
     # Use the "secrets" keyword to pass named secrets.
     secrets:
       ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
       ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-      QUAY_USERNAME: ${{ secrets.QUAY_MANUFACTURING_USERNAME }}
-      QUAY_PASSWORD: ${{ secrets.QUAY_MANUFACTURING_PASSWORD }}
+      ORG_GITHUB_TOKEN: ${{ secrets.RELEASE_BUILD_PAT }}
     # Workflows that call reusable workflows in the same organization or enterprise
     #  can use the "inherit" keyword to implicitly pass the secrets.
       # secrets: inherit

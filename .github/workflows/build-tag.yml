@@ -1,0 +1,43 @@
+name: Build container image on release created
+
+on:
+  workflow_dispatch:
+  
+  release:
+    types: [created]
+  
+#  push:
+#    # Pattern matched against refs/tags
+#    tags:
+#      - '*'           # Push events to every tag not containing /
+
+jobs:
+  define-variables:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step2.outputs.image-name }}
+    steps:
+      - id: step1
+        name: Checkout project
+        uses: actions/checkout@v3
+      - id: step2
+        name: Set image tag version
+        run: echo "::set-output name=image-name::${GITHUB_REF##refs/tags/v}"
+  call-build-tag:
+    needs: define-variables
+#    environment: development
+    uses: qiot-project/qiot-ubi-all-reusable-workflows/.github/workflows/app-build-tag.yml@main
+    # To pass named inputs to a called workflow, use the "with" keyword in a job.
+    with:
+      TAG_NAME: ${{ github.ref_name }}
+      IMAGE_VERSION: ${{needs.define-variables.outputs.output1}}
+      # JVM: false # Optional - Default true - Enable this input variable if you need your Quarkus app to be compiled in JVM_MODE 
+    # Use the "secrets" keyword to pass named secrets.
+    secrets:
+      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+      ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
+      QUAY_USERNAME: ${{ secrets.QUAY_MANUFACTURING_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_MANUFACTURING_PASSWORD }}
+    # Workflows that call reusable workflows in the same organization or enterprise
+    #  can use the "inherit" keyword to implicitly pass the secrets.
+      # secrets: inherit
